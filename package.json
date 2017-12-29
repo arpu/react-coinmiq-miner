@@ -1,0 +1,44 @@
+{
+    "name": "react-coinmiq-miner",
+    "version": "1.0.5",
+    "description": "A component to mine Nimiq cryptocurrency from your browser.",
+    "main": "build/index.js",
+    "repository": "https://github.com/joewandy/react-coinmiq-miner.git",
+    "author": {
+        "name": "Joe Wandy",
+        "email": "joewandy@gmail.com"
+    },
+    "keywords" : ["cryptocurrency", "mining", "nimiq"],
+    "license": "GPL-3.0",
+    "peerDependencies": {
+        "react": "^15.5.4"
+    },
+    "dependencies": {
+        "css-loader": "^0.28.7",
+        "react-sweet-progress": "^1.1.0",
+        "react-toggle-button": "^2.2.0",
+        "style-loader": "^0.19.1",
+        "uuid": "^3.1.0"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "webpack --watch",
+        "build": "webpack"
+    },
+    "devDependencies": {
+        "react": "^15.5.4",
+        "webpack": "^2.6.1",
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.24.1",
+        "babel-loader": "^7.0.0",
+        "babel-plugin-syntax-async-functions": "^6.13.0",
+        "babel-plugin-transform-object-rest-spread": "^6.23.0",
+        "babel-plugin-transform-react-jsx": "^6.24.1",
+        "babel-preset-env": "^1.5.1",
+        "babel-preset-es2017": "^6.24.1",
+        "babel-preset-stage-3": "^6.24.1",
+        "file-loader": "^1.1.6",
+        "image-webpack-loader": "^3.4.2",
+        "url-loader": "^0.6.2"
+    }
+}
