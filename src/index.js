@@ -260,7 +260,7 @@ class CoinmiqMiner extends React.Component {
             let buttonDisabled = currentComponent.state.buttonDisabled;
             if (progressPercent > 100) {
                 progressPercent = 100;
-                this.setState({
+                currentComponent.setState({
                     doMining: false
                 });
                 // e.target.checked = false; // doesn't work
