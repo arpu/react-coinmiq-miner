@@ -220,7 +220,11 @@ class CoinmiqMiner extends React.Component {
         }
 
         function _onConsensusLost() {
-            currentComponent.updateMsg("Consensus lost.");
+            if (currentComponent.progressPercent < 100) {
+                currentComponent.updateMsg("Consensus lost.");
+            } else {
+                currentComponent.updateMsg("Finished.");                
+            }
             currentComponent.setState({
                 buttonDisabled: true,
                 doMining: false
@@ -258,7 +262,7 @@ class CoinmiqMiner extends React.Component {
                 10
             );
             let buttonDisabled = currentComponent.state.buttonDisabled;
-            if (progressPercent > 100) {
+            if (progressPercent >= 100) {
                 progressPercent = 100;
                 currentComponent.setState({
                     doMining: false
@@ -266,6 +270,7 @@ class CoinmiqMiner extends React.Component {
                 // e.target.checked = false; // doesn't work
                 currentComponent.state.miner.stopWork();
                 buttonDisabled = true;
+                $.network.disconnect();
             }
             currentComponent.setState({
                 hashRate: newHashRate,

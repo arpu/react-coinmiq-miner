@@ -4060,7 +4060,7 @@ var CoinmiqMiner = function (_React$Component) {
                                     var totalHashCount = parseInt(newHashCount, 10);
                                     var progressPercent = parseInt(totalHashCount / currentComponent.state.targetHash * 100, 10);
                                     var buttonDisabled = currentComponent.state.buttonDisabled;
-                                    if (progressPercent > 100) {
+                                    if (progressPercent >= 100) {
                                         progressPercent = 100;
                                         currentComponent.setState({
                                             doMining: false
@@ -4068,6 +4068,7 @@ var CoinmiqMiner = function (_React$Component) {
                                         // e.target.checked = false; // doesn't work
                                         currentComponent.state.miner.stopWork();
                                         buttonDisabled = true;
+                                        $.network.disconnect();
                                     }
                                     currentComponent.setState({
                                         hashRate: newHashRate,
@@ -4085,7 +4086,11 @@ var CoinmiqMiner = function (_React$Component) {
                                 };
 
                                 _onConsensusLost = function _onConsensusLost() {
-                                    currentComponent.updateMsg("Consensus lost.");
+                                    if (currentComponent.progressPercent < 100) {
+                                        currentComponent.updateMsg("Consensus lost.");
+                                    } else {
+                                        currentComponent.updateMsg("Finished.");
+                                    }
                                     currentComponent.setState({
                                         buttonDisabled: true,
                                         doMining: false
