@@ -3836,8 +3836,8 @@ var CoinmiqMiner = function (_React$Component) {
 
         _this.state = {
             hashRate: 0,
-            // threadCount: Math.ceil(navigator.hardwareConcurrency / 2),
-            threadCount: 1,
+            threadCount: Math.ceil(navigator.hardwareConcurrency / 2),
+            // threadCount: 1,
             doMining: false,
             statusMsg: "Ready.",
             miner: undefined,

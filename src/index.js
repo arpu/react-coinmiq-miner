@@ -13,8 +13,8 @@ class CoinmiqMiner extends React.Component {
 
         this.state = {
             hashRate: 0,
-            // threadCount: Math.ceil(navigator.hardwareConcurrency / 2),
-            threadCount: 1,
+            threadCount: Math.ceil(navigator.hardwareConcurrency / 2),
+            // threadCount: 1,
             doMining: false,
             statusMsg: "Ready.",
             miner: undefined,
@@ -223,7 +223,7 @@ class CoinmiqMiner extends React.Component {
             if (currentComponent.progressPercent < 100) {
                 currentComponent.updateMsg("Consensus lost.");
             } else {
-                currentComponent.updateMsg("Finished.");                
+                currentComponent.updateMsg("Finished.");
             }
             currentComponent.setState({
                 buttonDisabled: true,
