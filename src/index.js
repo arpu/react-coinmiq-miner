@@ -2,6 +2,7 @@ import "babel-polyfill";
 import React from "react";
 
 import logo from "./images/logo_white_small.png";
+import loading from "./images/loading.svg";
 
 import ToggleButton from "react-toggle-button";
 import { Progress } from "react-sweet-progress";
@@ -18,6 +19,7 @@ class CoinmiqMiner extends React.Component {
             threadCount: Math.ceil(navigator.hardwareConcurrency / 2),
             // threadCount: 1,
             doMining: false,
+            showProgress: false,
             statusMsg: "Ready.",
             miner: undefined,
             buttonDisabled: false,
@@ -41,14 +43,10 @@ class CoinmiqMiner extends React.Component {
         );
         this.initialise = this.initialise.bind(this);
         this.loadNimiqEngine = this.loadNimiqEngine.bind(this);
+        this.handleScriptCreate = this.handleScriptCreate.bind(this);
+        this.handleScriptError = this.handleScriptError.bind(this);
+        this.handleScriptLoad = this.handleScriptLoad.bind(this);
     }
-
-    // componentWillMount() {
-    //     const script = document.createElement("script");
-    //     script.src = "https://cdn.nimiq.com/core/nimiq.js";
-    //     script.async = true;
-    //     document.body.appendChild(script);
-    // }
 
     loadNimiqEngine() {
         if (window.Nimiq === undefined) {
@@ -79,17 +77,20 @@ class CoinmiqMiner extends React.Component {
     handleMiningButtonChange(doMining) {
         const address = this.state.address;
 
-        if (this.state.miner === undefined) { // need to create a miner
+        if (this.state.miner === undefined) {
+            // need to create a miner
             console.log("Loading Nimiq engine.");
             this.updateMsg("Connecting.");
             if (this.loadNimiqEngine()) {
                 this.setState({
-                    doMining: true
+                    doMining: true,
+                    showProgress: true
                 });
             } else {
                 this.updateMsg("Cannot load Nimiq engine.");
             }
-        } else { // otherwise flip the state
+        } else {
+            // otherwise flip the state
             doMining = !doMining;
             let newMsg = "";
             if (doMining) {
@@ -133,17 +134,23 @@ class CoinmiqMiner extends React.Component {
 
     handleScriptCreate() {
         this.setState({ scriptLoaded: false });
-        console.log("handleScriptCreate() scriptLoaded " + this.state.scriptLoaded);
+        console.log(
+            "handleScriptCreate() scriptLoaded " + this.state.scriptLoaded
+        );
     }
 
     handleScriptError() {
         this.setState({ scriptError: true });
-        console.log("handleScriptError() scriptError " + this.state.scriptError);
+        console.log(
+            "handleScriptError() scriptError " + this.state.scriptError
+        );
     }
 
     handleScriptLoad() {
         this.setState({ scriptLoaded: true });
-        console.log("handleScriptLoad() scriptLoaded " + this.state.scriptLoaded);
+        console.log(
+            "handleScriptLoad() scriptLoaded " + this.state.scriptLoaded
+        );
         if (this.state.autoStart) {
             this.setState({
                 doMining: true
@@ -179,12 +186,14 @@ class CoinmiqMiner extends React.Component {
             lineHeight: "3px"
         };
 
-        let displayToggle = {
-            visibility: "visible"
-        };
+        let displayToggle = null;
         if (this.state.buttonDisabled) {
             displayToggle = {
                 visibility: "hidden"
+            };
+        } else {
+            displayToggle = {
+                visibility: "visible"
             };
         }
 
@@ -194,9 +203,9 @@ class CoinmiqMiner extends React.Component {
             <div style={backgroundStyle}>
                 <Script
                     url="https://cdn.nimiq.com/core/nimiq.js"
-                    onCreate={this.handleScriptCreate.bind(this)}
-                    onError={this.handleScriptError.bind(this)}
-                    onLoad={this.handleScriptLoad.bind(this)}
+                    onCreate={this.handleScriptCreate}
+                    onError={this.handleScriptError}
+                    onLoad={this.handleScriptLoad}
                 />
                 <div style={displayToggle}>
                     <ToggleButton
@@ -209,7 +218,10 @@ class CoinmiqMiner extends React.Component {
                 </div>
                 <Logo />
                 <HashRate display={this.state.hashRate} />
-                <StatusMessage display={this.state.statusMsg} />
+                <StatusMessage
+                    display={this.state.statusMsg}
+                    showProgress={this.state.showProgress}
+                />
                 <Progress percent={this.state.progressPercent} />
                 <ThreadCount
                     display={this.state.threadCount}
@@ -255,7 +267,8 @@ class CoinmiqMiner extends React.Component {
                 miner: $.miner,
                 buttonDisabled: false,
                 address: address,
-                doMining: true
+                doMining: true,
+                showProgress: false
             });
             $.miner.startWork();
         }
@@ -268,7 +281,8 @@ class CoinmiqMiner extends React.Component {
             }
             currentComponent.setState({
                 buttonDisabled: true,
-                doMining: false
+                doMining: false,
+                showProgress: false
             });
             let miner = currentComponent.state.miner;
             miner.stopWork();
@@ -305,20 +319,14 @@ class CoinmiqMiner extends React.Component {
             let buttonDisabled = currentComponent.state.buttonDisabled;
             if (progressPercent >= 100) {
                 progressPercent = 100;
-                currentComponent.setState({
-                    doMining: false
-                });
-                // e.target.checked = false; // doesn't work
                 currentComponent.state.miner.stopWork();
-                buttonDisabled = true;
                 $.network.disconnect();
             }
             currentComponent.setState({
                 hashRate: newHashRate,
                 totalHashCount: totalHashCount,
                 progressPercent: progressPercent,
-                totalElapsed: newElapsed,
-                buttonDisabled: buttonDisabled
+                totalElapsed: newElapsed
             });
         }
 
@@ -391,7 +399,7 @@ function Logo(props) {
 
 function HashRate(props) {
     const style = {
-        fontSize: 48,
+        fontSize: 36,
         color: "#333",
         fontWeight: "bold"
     };
@@ -404,11 +412,30 @@ function StatusMessage(props) {
         color: "#333",
         fontWeight: "bold",
         height: "2em",
-        marginBottom: 5
+        marginBottom: 5,
+        verticalAlign: "middle"
     };
+    let progressToggle = null;
+    if (props.showProgress) {
+        progressToggle = {
+            display: "inline"
+        };
+    } else {
+        progressToggle = {
+            display: "none"
+        };
+    }
     return (
-        <div>
-            <div style={style}>{props.display}</div>
+        <div style={style}>
+            <p>
+                <img
+                    src={loading}
+                    style={progressToggle}
+                    width="16"
+                    alt="Loading"
+                />&nbsp;&nbsp;
+                {props.display}
+            </p>
         </div>
     );
 }
