@@ -18,6 +18,7 @@
         "react": "^16.2.0"
     },
     "dependencies": {
+        "react-load-script": "0.0.6",
         "react-sweet-progress": "^1.1.0",
         "react-toggle-button": "^2.2.0",
         "uuid": "^3.1.0"

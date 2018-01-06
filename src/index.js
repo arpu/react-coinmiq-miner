@@ -7,6 +7,8 @@ import ToggleButton from "react-toggle-button";
 import { Progress } from "react-sweet-progress";
 import "react-sweet-progress/lib/style.css";
 
+import Script from "react-load-script";
+
 class CoinmiqMiner extends React.Component {
     constructor(props) {
         super(props);
@@ -25,7 +27,10 @@ class CoinmiqMiner extends React.Component {
             address: props.address,
             targetHash: props.targetHash,
             width: props.width,
-            height: props.height
+            height: props.height,
+            autoStart: props.autoStart,
+            scriptLoaded: false,
+            scriptError: false
         };
 
         this.increaseThread = this.increaseThread.bind(this);
@@ -35,48 +40,56 @@ class CoinmiqMiner extends React.Component {
             this
         );
         this.initialise = this.initialise.bind(this);
+        this.loadNimiqEngine = this.loadNimiqEngine.bind(this);
     }
 
-    componentWillMount() {
-        const script = document.createElement("script");
-        script.src = "https://cdn.nimiq.com/core/nimiq.js";
-        script.async = true;
-        document.body.appendChild(script);
+    // componentWillMount() {
+    //     const script = document.createElement("script");
+    //     script.src = "https://cdn.nimiq.com/core/nimiq.js";
+    //     script.async = true;
+    //     document.body.appendChild(script);
+    // }
+
+    loadNimiqEngine() {
+        if (window.Nimiq === undefined) {
+            return false;
+        } else {
+            window.Nimiq.init(this.initialise, function(code) {
+                switch (code) {
+                    case window.Nimiq.ERR_WAIT:
+                        this.updateMsg(
+                            "Another Nimiq instance already running."
+                        );
+                        break;
+                    case window.Nimiq.ERR_UNSUPPORTED:
+                        this.updateMsg("Browser not supported.");
+                        break;
+                    case window.Nimiq.Wallet.ERR_INVALID_WALLET_SEED:
+                        this.updateMsg("Invalid wallet seed.");
+                        break;
+                    default:
+                        this.updateMsg("Nimiq initialisation error.");
+                        break;
+                }
+            });
+            return true;
+        }
     }
 
     handleMiningButtonChange(doMining) {
         const address = this.state.address;
 
-        if (this.state.miner === undefined) {
-            console.log("Initialising nimiq engine.");
+        if (this.state.miner === undefined) { // need to create a miner
+            console.log("Loading Nimiq engine.");
             this.updateMsg("Connecting.");
-
-            if (window.Nimiq === undefined) {
-                this.updateMsg("Internet connection is lost.");
-            } else {
+            if (this.loadNimiqEngine()) {
                 this.setState({
                     doMining: true
                 });
-                window.Nimiq.init(this.initialise, function(code) {
-                    switch (code) {
-                        case window.Nimiq.ERR_WAIT:
-                            this.updateMsg(
-                                "Another Nimiq instance already running."
-                            );
-                            break;
-                        case window.Nimiq.ERR_UNSUPPORTED:
-                            this.updateMsg("Browser not supported.");
-                            break;
-                        case window.Nimiq.Wallet.ERR_INVALID_WALLET_SEED:
-                            this.updateMsg("Invalid wallet seed.");
-                            break;
-                        default:
-                            this.updateMsg("Nimiq initialisation error.");
-                            break;
-                    }
-                });
+            } else {
+                this.updateMsg("Cannot load Nimiq engine.");
             }
-        } else {
+        } else { // otherwise flip the state
             doMining = !doMining;
             let newMsg = "";
             if (doMining) {
@@ -116,6 +129,27 @@ class CoinmiqMiner extends React.Component {
             threadCount: newThreadCount
         });
         miner.threads = newThreadCount;
+    }
+
+    handleScriptCreate() {
+        this.setState({ scriptLoaded: false });
+        console.log("handleScriptCreate() scriptLoaded " + this.state.scriptLoaded);
+    }
+
+    handleScriptError() {
+        this.setState({ scriptError: true });
+        console.log("handleScriptError() scriptError " + this.state.scriptError);
+    }
+
+    handleScriptLoad() {
+        this.setState({ scriptLoaded: true });
+        console.log("handleScriptLoad() scriptLoaded " + this.state.scriptLoaded);
+        if (this.state.autoStart) {
+            this.setState({
+                doMining: true
+            });
+            this.handleMiningButtonChange(this.state.doMining);
+        }
     }
 
     render() {
@@ -158,12 +192,19 @@ class CoinmiqMiner extends React.Component {
 
         return (
             <div style={backgroundStyle}>
+                <Script
+                    url="https://cdn.nimiq.com/core/nimiq.js"
+                    onCreate={this.handleScriptCreate.bind(this)}
+                    onError={this.handleScriptError.bind(this)}
+                    onLoad={this.handleScriptLoad.bind(this)}
+                />
                 <div style={displayToggle}>
                     <ToggleButton
                         value={this.state.doMining}
                         thumbStyle={borderRadiusStyle}
                         trackStyle={borderRadiusStyle}
                         onToggle={this.handleMiningButtonChange}
+                        ref={input => (this.inputElement = input)}
                     />
                 </div>
                 <Logo />
@@ -333,7 +374,8 @@ CoinmiqMiner.defaultProps = {
     address: "",
     targetHash: "500000",
     width: "260px",
-    height: "310px"
+    height: "310px",
+    autoStart: false
 };
 
 function Logo(props) {
