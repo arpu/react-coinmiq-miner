@@ -248,7 +248,7 @@ class CoinmiqMiner extends React.Component {
                         onToggle={this.handleMiningButtonChange}
                     />
                 </div>
-                <Logo disabled={this.state.displayMode} />
+                <Logo displayMode={this.state.displayMode} />
                 <HashRate display={this.state.hashRate} />
                 <StatusMessage
                     display={this.state.statusMsg}
@@ -408,17 +408,18 @@ CoinmiqMiner.defaultProps = {
 };
 
 function Logo(props) {
-    if (props.disabled) {
-        return null;
-    }
     const style = {
         margin: 2
     };
-    return (
-        <div style={style}>
-            <img src={logo} alt="Coinmiq" />
-        </div>
-    );
+    if (props.displayMode === 'full') {
+        return (
+            <div style={style}>
+                <img src={logo} alt="Coinmiq" />
+            </div>
+        );
+    } else {
+        return null;
+    }
 }
 
 function HashRate(props) {
