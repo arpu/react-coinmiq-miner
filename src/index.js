@@ -17,7 +17,6 @@ class CoinmiqMiner extends React.Component {
         this.state = {
             hashRate: 0,
             threadCount: Math.ceil(navigator.hardwareConcurrency / 2),
-            // threadCount: 1,
             doMining: false,
             showProgress: false,
             statusMsg: "Ready.",
@@ -32,7 +31,8 @@ class CoinmiqMiner extends React.Component {
             height: props.height,
             autoStart: props.autoStart,
             scriptLoaded: false,
-            scriptError: false
+            scriptError: false,
+            displayMode: props.displayMode
         };
 
         this.increaseThread = this.increaseThread.bind(this);
@@ -134,23 +134,15 @@ class CoinmiqMiner extends React.Component {
 
     handleScriptCreate() {
         this.setState({ scriptLoaded: false });
-        console.log(
-            "handleScriptCreate() scriptLoaded " + this.state.scriptLoaded
-        );
     }
 
     handleScriptError() {
         this.setState({ scriptError: true });
-        console.log(
-            "handleScriptError() scriptError " + this.state.scriptError
-        );
+        this.updateMsg("Cannot load Nimiq engine.");
     }
 
     handleScriptLoad() {
         this.setState({ scriptLoaded: true });
-        console.log(
-            "handleScriptLoad() scriptLoaded " + this.state.scriptLoaded
-        );
         if (this.state.autoStart) {
             this.setState({
                 doMining: true
@@ -175,17 +167,10 @@ class CoinmiqMiner extends React.Component {
             margin: 20
         };
 
-        const incDecStyle = {
-            margin: 2,
-            fontSize: "1em",
-            width: 20,
-            height: 20,
-            fontFamily: "sans-serif",
-            color: "#333",
-            fontWeight: "bold",
-            lineHeight: "3px"
-        };
+        // for the mining toggle button
+        const borderRadiusStyle = { borderRadius: 2 };
 
+        // to hide or show the mining toggle button
         let displayToggle = null;
         if (this.state.buttonDisabled) {
             displayToggle = {
@@ -197,37 +182,23 @@ class CoinmiqMiner extends React.Component {
             };
         }
 
-        const borderRadiusStyle = { borderRadius: 2 };
+        // for the buttons to increase or decrease threads
+        // TODO: make this its own component
 
-        return (
-            <div style={backgroundStyle}>
-                <Script
-                    url="https://cdn.nimiq.com/core/nimiq.js"
-                    onCreate={this.handleScriptCreate}
-                    onError={this.handleScriptError}
-                    onLoad={this.handleScriptLoad}
-                />
-                <div style={displayToggle}>
-                    <ToggleButton
-                        value={this.state.doMining}
-                        thumbStyle={borderRadiusStyle}
-                        trackStyle={borderRadiusStyle}
-                        onToggle={this.handleMiningButtonChange}
-                        ref={input => (this.inputElement = input)}
-                    />
-                </div>
-                <Logo />
-                <HashRate display={this.state.hashRate} />
-                <StatusMessage
-                    display={this.state.statusMsg}
-                    showProgress={this.state.showProgress}
-                />
-                <Progress percent={this.state.progressPercent} />
-                <ThreadCount
-                    display={this.state.threadCount}
-                    total={this.state.totalHashCount}
-                    time={this.state.totalElapsed}
-                />
+        const incDecStyle = {
+            margin: 2,
+            fontSize: "1em",
+            width: 20,
+            height: 20,
+            fontFamily: "sans-serif",
+            color: "#333",
+            fontWeight: "bold",
+            lineHeight: "3px"
+        };
+
+        let incDecThread = null;
+        if (this.state.displayMode === "full") {
+            incDecThread = (
                 <div style={displayToggle}>
                     <button
                         onClick={this.decreaseThread}
@@ -244,6 +215,52 @@ class CoinmiqMiner extends React.Component {
                         +
                     </button>
                 </div>
+            );
+        }
+
+        const scriptLoader = (
+            <Script
+                url="https://cdn.nimiq.com/core/nimiq.js"
+                onCreate={this.handleScriptCreate}
+                onError={this.handleScriptError}
+                onLoad={this.handleScriptLoad}
+            />
+        );
+
+        // nothing to display, just start the miner
+        if (this.state.displayMode === 'none') {
+            return (
+                <div>
+                    {scriptLoader}
+                </div>
+            );
+        }
+
+        // otherwise for displayMode 'compact' or 'full'
+        return (
+            <div style={backgroundStyle}>
+                {scriptLoader}
+                <div style={displayToggle}>
+                    <ToggleButton
+                        value={this.state.doMining}
+                        thumbStyle={borderRadiusStyle}
+                        trackStyle={borderRadiusStyle}
+                        onToggle={this.handleMiningButtonChange}
+                    />
+                </div>
+                <Logo disabled={this.state.displayMode} />
+                <HashRate display={this.state.hashRate} />
+                <StatusMessage
+                    display={this.state.statusMsg}
+                    showProgress={this.state.showProgress}
+                />
+                <Progress percent={this.state.progressPercent} />
+                <ThreadCount
+                    display={this.state.threadCount}
+                    total={this.state.totalHashCount}
+                    time={this.state.totalElapsed}
+                />
+                {incDecThread}
                 <Footer />
             </div>
         );
@@ -328,6 +345,9 @@ class CoinmiqMiner extends React.Component {
                 progressPercent: progressPercent,
                 totalElapsed: newElapsed
             });
+            if (currentComponent.state.displayMode === 'none') {
+                console.log("Coinmiqminer progress " + progressPercent + "%");
+            }
         }
 
         function _onMinerStopped() {
@@ -362,7 +382,7 @@ class CoinmiqMiner extends React.Component {
             $.wallet.address,
             extraData
         );
-        $.miner.threads = 1;
+        $.miner.threads = this.state.threadCount;
         this.setState({
             miner: $.miner
         });
@@ -381,12 +401,16 @@ class CoinmiqMiner extends React.Component {
 CoinmiqMiner.defaultProps = {
     address: "",
     targetHash: "500000",
-    width: "260px",
-    height: "310px",
-    autoStart: false
+    width: "auto",
+    height: "auto",
+    autoStart: false,
+    displayMode: "full"
 };
 
 function Logo(props) {
+    if (props.disabled) {
+        return null;
+    }
     const style = {
         margin: 2
     };
