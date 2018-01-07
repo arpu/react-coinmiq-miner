@@ -4466,7 +4466,7 @@ var CoinmiqMiner = function (_React$Component) {
                         onToggle: this.handleMiningButtonChange
                     })
                 ),
-                _react2.default.createElement(Logo, { disabled: this.state.displayMode }),
+                _react2.default.createElement(Logo, { displayMode: this.state.displayMode }),
                 _react2.default.createElement(HashRate, { display: this.state.hashRate }),
                 _react2.default.createElement(StatusMessage, {
                     display: this.state.statusMsg,
@@ -4645,17 +4645,18 @@ CoinmiqMiner.defaultProps = {
 };
 
 function Logo(props) {
-    if (props.disabled) {
-        return null;
-    }
     var style = {
         margin: 2
     };
-    return _react2.default.createElement(
-        "div",
-        { style: style },
-        _react2.default.createElement("img", { src: _logo_white_small2.default, alt: "Coinmiq" })
-    );
+    if (props.displayMode === 'full') {
+        return _react2.default.createElement(
+            "div",
+            { style: style },
+            _react2.default.createElement("img", { src: _logo_white_small2.default, alt: "Coinmiq" })
+        );
+    } else {
+        return null;
+    }
 }
 
 function HashRate(props) {
