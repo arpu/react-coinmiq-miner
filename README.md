@@ -21,6 +21,8 @@ export default MyClass extends React.Component {
               targetHash="500000"
               width="260px"
               height="auto"
+              autoStart="false"
+              displayMode="full"              
             />
         )
     }
