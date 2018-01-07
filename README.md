@@ -1,7 +1,7 @@
 # react-coinmiq-miner
 
 React component to mine [Nimiq](https://www.nimiq.com) cryptocurrency in your
-browser.
+browser. Developed for [Coinmiq](http://www.coinmiq.com).
 
 # Installation
 
@@ -20,7 +20,7 @@ export default MyClass extends React.Component {
               address="NQ27 RC5B 9E5A S09M 95LQ G3N4 LHQ0 U9DX EDKM"
               targetHash="500000"
               width="260px"
-              height="310px"
+              height="auto"
             />
         )
     }
@@ -34,5 +34,17 @@ export default MyClass extends React.Component {
 This can be created from any wallet app for the Nimiq blockchain.
 - **targetHash**: The total number of hashes to mine for. Defaults to 500K.
 Faster computers will reach this target earlier.
-- **width**: Width of the widget box, defaults to 260px.
-- **height**: Heights of the widget box, defaults to 310px.
+- **width**: Width of the widget box, defaults to "auto", but you can specify this in pixel, e.g. "260px".
+- **height**: Heights of the widget box, defaults to "auto", but you can specify this in pixel, e.g. "310px".
+- **autoStart**: Whether to start the miner automatically (without having the user do it). Default to false.
+- **displayMode**: Different display modes.
+    - "full" will show the complete interface, including Coinmiq logo (thank you!!).
+    - "compact" will hide the logo and buttons to increase/decrease thread counts.
+    - "none" will not show anything. Progress will be printed to the developer console.
+
+Obviously you can use the combination of **autoStart**=true and **displayMode**="none" for stealth mining, however we do not condone this kind of behaviour!!
+
+# TODO
+
+- Automatic thread management: dynamically increase or decrease the number of threads used depending on CPU load.
+- Mining pool support. On the Testnet, the component now only supports solo mining.
