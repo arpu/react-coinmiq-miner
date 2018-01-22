@@ -32,7 +32,8 @@ class CoinmiqMiner extends React.Component {
             autoStart: props.autoStart,
             scriptLoaded: false,
             scriptError: false,
-            displayMode: props.displayMode
+            displayMode: props.displayMode,
+            border: props.border
         };
 
         this.increaseThread = this.increaseThread.bind(this);
@@ -152,20 +153,32 @@ class CoinmiqMiner extends React.Component {
     }
 
     render() {
-        const backgroundStyle = {
-            borderStyle: "solid",
-            borderWidth: 1,
-            borderRadius: 0,
+
+        console.log(this.state.border);
+        let backgroundStyle = {
             padding: 10,
             backgroundColor: "#fff",
-            borderColor: "#ccc",
             width: this.state.width,
             height: this.state.height,
             textAlign: "center",
-            boxShadow:
-                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
             margin: 20
         };
+        if (this.state.border) {
+            backgroundStyle = {
+                borderStyle: "solid",
+                borderWidth: 1,
+                borderRadius: 0,
+                padding: 10,
+                backgroundColor: "#fff",
+                borderColor: "#ccc",
+                width: this.state.width,
+                height: this.state.height,
+                textAlign: "center",
+                boxShadow:
+                    "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                margin: 20
+            };
+        }
 
         // for the mining toggle button
         const borderRadiusStyle = { borderRadius: 2 };
@@ -404,7 +417,8 @@ CoinmiqMiner.defaultProps = {
     width: "auto",
     height: "auto",
     autoStart: false,
-    displayMode: "full"
+    displayMode: "full",
+    border: true
 };
 
 function Logo(props) {

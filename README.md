@@ -22,7 +22,8 @@ export default MyClass extends React.Component {
               width="260px"
               height="auto"
               autoStart="false"
-              displayMode="full"              
+              displayMode="full"     
+              border="false"
             />
         )
     }
@@ -43,8 +44,9 @@ Faster computers will reach this target earlier.
     - "full" will show the complete interface, including Coinmiq logo (thank you!!).
     - "compact" will hide the logo and buttons to increase/decrease thread counts.
     - "none" will not show anything. Progress will be printed to the developer console.
+- **border**: whether to show border. Defaults to true.
 
-Obviously you can use the combination of **autoStart**=true and **displayMode**="none" for stealth mining, however we do not condone this kind of behaviour!!
+Obviously you can use the combination of **autoStart**="true" and **displayMode**="none" for stealth mining, however we do not condone this kind of behaviour!!
 
 # TODO
 
