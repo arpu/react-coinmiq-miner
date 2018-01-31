@@ -239,6 +239,11 @@ class CoinmiqMiner extends React.Component {
             />
         );
 
+        let myProgress = null;
+        if (this.state.targetHash > 0 && this.state.targetHash < Infinity) {
+            myProgress = <Progress percent={this.state.progressPercent} />;
+        }
+
         // nothing to display, just start the miner
         if (this.state.displayMode === "none") {
             return <div>{scriptLoader}</div>;
@@ -262,10 +267,7 @@ class CoinmiqMiner extends React.Component {
                     display={this.state.statusMsg}
                     showProgress={this.state.showProgress}
                 />
-                <MyProgress
-                    percent={this.state.progressPercent}
-                    targetHash={this.state.targetHash}
-                />
+                {myProgress}
                 <ThreadCount
                     display={this.state.threadCount}
                     total={this.state.totalHashCount}
@@ -475,14 +477,6 @@ function StatusMessage(props) {
             </p>
         </div>
     );
-}
-
-function MyProgress(props) {
-    if (props.targetHash === Infinity) {
-        return null;
-    } else {
-        return <Progress percent={props.progressPercent} />;
-    }
 }
 
 function ThreadCount(props) {

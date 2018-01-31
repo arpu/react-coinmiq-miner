@@ -4454,6 +4454,11 @@ var CoinmiqMiner = function (_React$Component) {
                 onLoad: this.handleScriptLoad
             });
 
+            var myProgress = null;
+            if (this.state.targetHash > 0 && this.state.targetHash < Infinity) {
+                myProgress = _react2.default.createElement(_reactSweetProgress.Progress, { percent: this.state.progressPercent });
+            }
+
             // nothing to display, just start the miner
             if (this.state.displayMode === "none") {
                 return _react2.default.createElement(
@@ -4484,10 +4489,7 @@ var CoinmiqMiner = function (_React$Component) {
                     display: this.state.statusMsg,
                     showProgress: this.state.showProgress
                 }),
-                _react2.default.createElement(MyProgress, {
-                    percent: this.state.progressPercent,
-                    targetHash: this.state.targetHash
-                }),
+                myProgress,
                 _react2.default.createElement(ThreadCount, {
                     display: this.state.threadCount,
                     total: this.state.totalHashCount,
@@ -4724,14 +4726,6 @@ function StatusMessage(props) {
             props.display
         )
     );
-}
-
-function MyProgress(props) {
-    if (props.targetHash === Infinity) {
-        return null;
-    } else {
-        return _react2.default.createElement(_reactSweetProgress.Progress, { percent: props.progressPercent });
-    }
 }
 
 function ThreadCount(props) {
