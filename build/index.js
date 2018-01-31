@@ -4367,7 +4367,6 @@ var CoinmiqMiner = function (_React$Component) {
     }, {
         key: "render",
         value: function render() {
-
             console.log(this.state.border);
             var backgroundStyle = {
                 padding: 10,
@@ -4456,7 +4455,7 @@ var CoinmiqMiner = function (_React$Component) {
             });
 
             // nothing to display, just start the miner
-            if (this.state.displayMode === 'none') {
+            if (this.state.displayMode === "none") {
                 return _react2.default.createElement(
                     "div",
                     null,
@@ -4485,7 +4484,10 @@ var CoinmiqMiner = function (_React$Component) {
                     display: this.state.statusMsg,
                     showProgress: this.state.showProgress
                 }),
-                _react2.default.createElement(MyProgress, { percent: this.state.progressPercent, targetHash: this.state.targetHash }),
+                _react2.default.createElement(MyProgress, {
+                    percent: this.state.progressPercent,
+                    targetHash: this.state.targetHash
+                }),
                 _react2.default.createElement(ThreadCount, {
                     display: this.state.threadCount,
                     total: this.state.totalHashCount,
@@ -4538,7 +4540,7 @@ var CoinmiqMiner = function (_React$Component) {
                                         progressPercent: progressPercent,
                                         totalElapsed: newElapsed
                                     });
-                                    if (currentComponent.state.displayMode === 'none') {
+                                    if (currentComponent.state.displayMode === "none") {
                                         console.log("Coinmiqminer progress " + progressPercent + "%");
                                     }
                                 };
@@ -4662,7 +4664,7 @@ function Logo(props) {
     var style = {
         margin: 2
     };
-    if (props.displayMode === 'full') {
+    if (props.displayMode === "full") {
         return _react2.default.createElement(
             "div",
             { style: style },
@@ -4728,7 +4730,7 @@ function MyProgress(props) {
     if (props.targetHash === Infinity) {
         return null;
     } else {
-        return _react2.default.createElement(MyProgress, { percent: props.progressPercent });
+        return _react2.default.createElement(_reactSweetProgress.Progress, { percent: props.progressPercent });
     }
 }
 

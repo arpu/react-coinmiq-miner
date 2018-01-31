@@ -1,6 +1,6 @@
 {
     "name": "react-coinmiq-miner",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "description": "A component to mine Nimiq cryptocurrency from your browser.",
     "main": "build/index.js",
     "repository": "https://github.com/joewandy/react-coinmiq-miner.git",
