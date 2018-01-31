@@ -153,7 +153,6 @@ class CoinmiqMiner extends React.Component {
     }
 
     render() {
-
         console.log(this.state.border);
         let backgroundStyle = {
             padding: 10,
@@ -241,12 +240,8 @@ class CoinmiqMiner extends React.Component {
         );
 
         // nothing to display, just start the miner
-        if (this.state.displayMode === 'none') {
-            return (
-                <div>
-                    {scriptLoader}
-                </div>
-            );
+        if (this.state.displayMode === "none") {
+            return <div>{scriptLoader}</div>;
         }
 
         // otherwise for displayMode 'compact' or 'full'
@@ -267,7 +262,10 @@ class CoinmiqMiner extends React.Component {
                     display={this.state.statusMsg}
                     showProgress={this.state.showProgress}
                 />
-                <MyProgress percent={this.state.progressPercent} targetHash={this.state.targetHash} />
+                <MyProgress
+                    percent={this.state.progressPercent}
+                    targetHash={this.state.targetHash}
+                />
                 <ThreadCount
                     display={this.state.threadCount}
                     total={this.state.totalHashCount}
@@ -358,7 +356,7 @@ class CoinmiqMiner extends React.Component {
                 progressPercent: progressPercent,
                 totalElapsed: newElapsed
             });
-            if (currentComponent.state.displayMode === 'none') {
+            if (currentComponent.state.displayMode === "none") {
                 console.log("Coinmiqminer progress " + progressPercent + "%");
             }
         }
@@ -425,7 +423,7 @@ function Logo(props) {
     const style = {
         margin: 2
     };
-    if (props.displayMode === 'full') {
+    if (props.displayMode === "full") {
         return (
             <div style={style}>
                 <img src={logo} alt="Coinmiq" />
@@ -483,9 +481,7 @@ function MyProgress(props) {
     if (props.targetHash === Infinity) {
         return null;
     } else {
-        return (
-            <MyProgress percent={props.progressPercent} />
-        );        
+        return <Progress percent={props.progressPercent} />;
     }
 }
 
