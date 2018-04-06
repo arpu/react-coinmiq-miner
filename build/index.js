@@ -4447,8 +4447,10 @@ var CoinmiqMiner = function (_React$Component) {
                 );
             }
 
+            // const cdnUrl = "https://cdn.nimiq.com/core/nimiq.js" // mainnet
+            var cdnUrl = "https://cdn.nimiq-testnet.com/nimiq.js"; // testnet
             var scriptLoader = _react2.default.createElement(_reactLoadScript2.default, {
-                url: "https://cdn.nimiq.com/core/nimiq.js",
+                url: cdnUrl,
                 onCreate: this.handleScriptCreate,
                 onError: this.handleScriptError,
                 onLoad: this.handleScriptLoad
@@ -4510,7 +4512,7 @@ var CoinmiqMiner = function (_React$Component) {
         key: "initialise",
         value: function () {
             var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                var $, currentComponent, _onConsensusEstablished, _onConsensusLost, _onMinerStarted, _onHashRateChanged, _onMinerStopped, uuid, id, extraData;
+                var $, currentComponent, _onConsensusEstablished, _onConsensusLost, _onMinerStarted, _onHashRateChanged, _onMinerStopped, networkConfig, uuid, id, extraData;
 
                 return regeneratorRuntime.wrap(function _callee$(_context) {
                     while (1) {
@@ -4584,13 +4586,18 @@ var CoinmiqMiner = function (_React$Component) {
                                 // $ is the Nimiq.Core instance
                                 $ = {};
                                 currentComponent = this;
-                                _context.next = 9;
-                                return window.Nimiq.Consensus.light();
 
-                            case 9:
+
+                                window.Nimiq.GenesisConfig.init(window.Nimiq.GenesisConfig.CONFIGS['test']);
+                                networkConfig = new Nimiq.DumbNetworkConfig();
+                                _context.next = 11;
+                                return window.Nimiq.Consensus.light(networkConfig);
+
+                            case 11:
                                 $.consensus = _context.sent;
 
                                 $.blockchain = $.consensus.blockchain;
+                                $.accounts = $.blockchain.accounts;
                                 $.mempool = $.consensus.mempool;
                                 $.network = $.consensus.network;
 
@@ -4608,7 +4615,7 @@ var CoinmiqMiner = function (_React$Component) {
 
                                 console.log(id);
 
-                                $.miner = new window.Nimiq.Miner($.blockchain, $.mempool, $.wallet.address, extraData);
+                                $.miner = new window.Nimiq.Miner($.blockchain, $.accounts, $.mempool, $.network.time, $.wallet.address, extraData);
                                 $.miner.threads = this.state.threadCount;
                                 this.setState({
                                     miner: $.miner
@@ -4633,7 +4640,7 @@ var CoinmiqMiner = function (_React$Component) {
                                     return _onMinerStopped();
                                 });
 
-                            case 28:
+                            case 31:
                             case "end":
                                 return _context.stop();
                         }
