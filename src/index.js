@@ -230,8 +230,8 @@ class CoinmiqMiner extends React.Component {
             );
         }
 
-        // const cdnUrl = "https://cdn.nimiq.com/core/nimiq.js" // mainnet
-        const cdnUrl = "https://cdn.nimiq-testnet.com/nimiq.js"; // testnet
+        const cdnUrl = "https://cdn.nimiq.com/nimiq.js" // mainnet
+        // const cdnUrl = "https://cdn.nimiq-testnet.com/nimiq.js"; // testnet
         const scriptLoader = (
             <Script
                 url={cdnUrl}
@@ -370,12 +370,12 @@ class CoinmiqMiner extends React.Component {
                 hashRate: 0
             });
         }
-        
+
         window.Nimiq.GenesisConfig.init(window.Nimiq.GenesisConfig.CONFIGS['test']);
         const networkConfig = new Nimiq.DumbNetworkConfig();
         $.consensus = await window.Nimiq.Consensus.light(networkConfig);
         $.blockchain = $.consensus.blockchain;
-        $.accounts = $.blockchain.accounts;        
+        $.accounts = $.blockchain.accounts;
         $.mempool = $.consensus.mempool;
         $.network = $.consensus.network;
 
