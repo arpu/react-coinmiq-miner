@@ -17,6 +17,7 @@ export default MyClass extends React.Component {
     render() {
         return (
             <CoinmiqMiner
+              network="main"            
               address="NQ27 RC5B 9E5A S09M 95LQ G3N4 LHQ0 U9DX EDKM"
               targetHash="500000"
               width="260px"
@@ -32,6 +33,7 @@ export default MyClass extends React.Component {
 
 # Props
 
+* **network** specifies whether to mine in the 'main' or the 'test' network. Defaults to main.
 * **address**: Required. Must be a valid Nimiq wallet address in user-friendly format, e.g.
   `NQ27 RC5B 9E5A S09M 95LQ G3N4 LHQ0 U9DX EDKM`.
   This can be created from any wallet app for the Nimiq blockchain.
@@ -50,4 +52,4 @@ export default MyClass extends React.Component {
 # TODO
 
 * Automatic thread management: dynamically increase or decrease the number of threads used depending on CPU load.
-* Mining pool support. On the Testnet, the component now only supports solo mining.
+* Mining pool support.

@@ -1,14 +1,14 @@
-import "babel-polyfill";
-import React from "react";
+import 'babel-polyfill';
+import React from 'react';
 
-import logo from "./images/logo_white_small.png";
-import loading from "./images/loading.svg";
+import logo from './images/logo_white_small.png';
+import loading from './images/loading.svg';
 
-import ToggleButton from "react-toggle-button";
-import { Progress } from "react-sweet-progress";
-import "react-sweet-progress/lib/style.css";
+import ToggleButton from 'react-toggle-button';
+import { Progress } from 'react-sweet-progress';
+import 'react-sweet-progress/lib/style.css';
 
-import Script from "react-load-script";
+import Script from 'react-load-script';
 
 class CoinmiqMiner extends React.Component {
     constructor(props) {
@@ -19,7 +19,7 @@ class CoinmiqMiner extends React.Component {
             threadCount: Math.ceil(navigator.hardwareConcurrency / 2),
             doMining: false,
             showProgress: false,
-            statusMsg: "Ready.",
+            statusMsg: 'Ready.',
             miner: undefined,
             buttonDisabled: false,
             totalHashCount: 0,
@@ -33,8 +33,12 @@ class CoinmiqMiner extends React.Component {
             scriptLoaded: false,
             scriptError: false,
             displayMode: props.displayMode,
-            border: props.border
+            border: props.border,
+            network: props.network
         };
+
+        this.mainnetCdn = 'https://cdn.nimiq.com/nimiq.js' // mainnet
+        this.testnetCdn = 'https://cdn.nimiq-testnet.com/nimiq.js'; // testnet
 
         this.increaseThread = this.increaseThread.bind(this);
         this.decreaseThread = this.decreaseThread.bind(this);
@@ -57,17 +61,17 @@ class CoinmiqMiner extends React.Component {
                 switch (code) {
                     case window.Nimiq.ERR_WAIT:
                         this.updateMsg(
-                            "Another Nimiq instance already running."
+                            'Another Nimiq instance already running.'
                         );
                         break;
                     case window.Nimiq.ERR_UNSUPPORTED:
-                        this.updateMsg("Browser not supported.");
+                        this.updateMsg('Browser not supported.');
                         break;
                     case window.Nimiq.Wallet.ERR_INVALID_WALLET_SEED:
-                        this.updateMsg("Invalid wallet seed.");
+                        this.updateMsg('Invalid wallet seed.');
                         break;
                     default:
-                        this.updateMsg("Nimiq initialisation error.");
+                        this.updateMsg('Nimiq initialisation error.');
                         break;
                 }
             });
@@ -80,25 +84,25 @@ class CoinmiqMiner extends React.Component {
 
         if (this.state.miner === undefined) {
             // need to create a miner
-            console.log("Loading Nimiq engine.");
-            this.updateMsg("Connecting.");
+            console.log('Loading Nimiq engine.');
+            this.updateMsg('Connecting.');
             if (this.loadNimiqEngine()) {
                 this.setState({
                     doMining: true,
                     showProgress: true
                 });
             } else {
-                this.updateMsg("Cannot load Nimiq engine.");
+                this.updateMsg('Cannot load Nimiq engine.');
             }
         } else {
             // otherwise flip the state
             doMining = !doMining;
-            let newMsg = "";
+            let newMsg = '';
             if (doMining) {
-                newMsg = "Mining to " + address + ".";
+                newMsg = 'Mining to ' + address + '.';
                 this.state.miner.startWork();
             } else {
-                newMsg = "Stopped.";
+                newMsg = 'Stopped.';
                 this.state.miner.stopWork();
             }
 
@@ -139,7 +143,7 @@ class CoinmiqMiner extends React.Component {
 
     handleScriptError() {
         this.setState({ scriptError: true });
-        this.updateMsg("Cannot load Nimiq engine.");
+        this.updateMsg('Cannot load Nimiq engine.');
     }
 
     handleScriptLoad() {
@@ -156,25 +160,25 @@ class CoinmiqMiner extends React.Component {
         console.log(this.state.border);
         let backgroundStyle = {
             padding: 10,
-            backgroundColor: "#fff",
+            backgroundColor: '#fff',
             width: this.state.width,
             height: this.state.height,
-            textAlign: "center",
+            textAlign: 'center',
             margin: 20
         };
         if (this.state.border) {
             backgroundStyle = {
-                borderStyle: "solid",
+                borderStyle: 'solid',
                 borderWidth: 1,
                 borderRadius: 0,
                 padding: 10,
-                backgroundColor: "#fff",
-                borderColor: "#ccc",
+                backgroundColor: '#fff',
+                borderColor: '#ccc',
                 width: this.state.width,
                 height: this.state.height,
-                textAlign: "center",
+                textAlign: 'center',
                 boxShadow:
-                    "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                    '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
                 margin: 20
             };
         }
@@ -186,11 +190,11 @@ class CoinmiqMiner extends React.Component {
         let displayToggle = null;
         if (this.state.buttonDisabled) {
             displayToggle = {
-                visibility: "hidden"
+                visibility: 'hidden'
             };
         } else {
             displayToggle = {
-                visibility: "visible"
+                visibility: 'visible'
             };
         }
 
@@ -199,17 +203,17 @@ class CoinmiqMiner extends React.Component {
 
         const incDecStyle = {
             margin: 2,
-            fontSize: "1em",
+            fontSize: '1em',
             width: 20,
             height: 20,
-            fontFamily: "sans-serif",
-            color: "#333",
-            fontWeight: "bold",
-            lineHeight: "3px"
+            fontFamily: 'sans-serif',
+            color: '#333',
+            fontWeight: 'bold',
+            lineHeight: '3px'
         };
 
         let incDecThread = null;
-        if (this.state.displayMode === "full") {
+        if (this.state.displayMode === 'full') {
             incDecThread = (
                 <div style={displayToggle}>
                     <button
@@ -230,8 +234,7 @@ class CoinmiqMiner extends React.Component {
             );
         }
 
-        const cdnUrl = "https://cdn.nimiq.com/nimiq.js" // mainnet
-        // const cdnUrl = "https://cdn.nimiq-testnet.com/nimiq.js"; // testnet
+        const cdnUrl = this.network === 'main' ? this.mainnetCdn : this.testnetCdn;
         const scriptLoader = (
             <Script
                 url={cdnUrl}
@@ -247,7 +250,7 @@ class CoinmiqMiner extends React.Component {
         }
 
         // nothing to display, just start the miner
-        if (this.state.displayMode === "none") {
+        if (this.state.displayMode === 'none') {
             return <div>{scriptLoader}</div>;
         }
 
@@ -294,7 +297,7 @@ class CoinmiqMiner extends React.Component {
 
         function _onConsensusEstablished() {
             const address = $.wallet.address.toUserFriendlyAddress();
-            currentComponent.updateMsg("Mining to " + address + ".");
+            currentComponent.updateMsg('Mining to ' + address + '.');
             currentComponent.setState({
                 miner: $.miner,
                 buttonDisabled: false,
@@ -307,9 +310,9 @@ class CoinmiqMiner extends React.Component {
 
         function _onConsensusLost() {
             if (currentComponent.progressPercent < 100) {
-                currentComponent.updateMsg("Consensus lost.");
+                currentComponent.updateMsg('Consensus lost.');
             } else {
-                currentComponent.updateMsg("Finished.");
+                currentComponent.updateMsg('Finished.');
             }
             currentComponent.setState({
                 buttonDisabled: true,
@@ -360,8 +363,8 @@ class CoinmiqMiner extends React.Component {
                 progressPercent: progressPercent,
                 totalElapsed: newElapsed
             });
-            if (currentComponent.state.displayMode === "none") {
-                console.log("Coinmiqminer progress " + progressPercent + "%");
+            if (currentComponent.state.displayMode === 'none') {
+                console.log('Coinmiqminer progress ' + progressPercent + '%');
             }
         }
 
@@ -371,7 +374,7 @@ class CoinmiqMiner extends React.Component {
             });
         }
 
-        window.Nimiq.GenesisConfig.init(window.Nimiq.GenesisConfig.CONFIGS['test']);
+        window.Nimiq.GenesisConfig.init(window.Nimiq.GenesisConfig.CONFIGS[this.state.network]);
         const networkConfig = new Nimiq.DumbNetworkConfig();
         $.consensus = await window.Nimiq.Consensus.light(networkConfig);
         $.blockchain = $.consensus.blockchain;
@@ -386,11 +389,11 @@ class CoinmiqMiner extends React.Component {
                 )
             };
         } catch (error) {
-            this.updateMsg("Invalid wallet address.");
+            this.updateMsg('Invalid wallet address.');
         }
 
-        let uuid = require("uuid");
-        let id = "coinmiq-" + uuid.v4();
+        let uuid = require('uuid');
+        let id = 'coinmiq-' + uuid.v4();
         let extraData = window.Nimiq.BufferUtils.fromAscii(id);
         console.log(id);
 
@@ -407,35 +410,36 @@ class CoinmiqMiner extends React.Component {
             miner: $.miner
         });
 
-        $.consensus.on("established", () => _onConsensusEstablished());
-        $.consensus.on("lost", () => _onConsensusLost());
+        $.consensus.on('established', () => _onConsensusEstablished());
+        $.consensus.on('lost', () => _onConsensusLost());
         $.network.connect();
-        this.updateMsg("Establishing consensus.");
+        this.updateMsg('Establishing consensus.');
 
-        $.miner.on("start", () => _onMinerStarted());
-        $.miner.on("hashrate-changed", () => _onHashRateChanged());
-        $.miner.on("stop", () => _onMinerStopped());
+        $.miner.on('start', () => _onMinerStarted());
+        $.miner.on('hashrate-changed', () => _onHashRateChanged());
+        $.miner.on('stop', () => _onMinerStopped());
     }
 }
 
 CoinmiqMiner.defaultProps = {
-    address: "",
+    address: '',
     targetHash: Infinity,
-    width: "auto",
-    height: "auto",
+    width: 'auto',
+    height: 'auto',
     autoStart: false,
-    displayMode: "full",
-    border: true
+    displayMode: 'full',
+    border: true,
+    network: 'main'
 };
 
 function Logo(props) {
     const style = {
         margin: 2
     };
-    if (props.displayMode === "full") {
+    if (props.displayMode === 'full') {
         return (
             <div style={style}>
-                <img src={logo} alt="Coinmiq" />
+                <img src={logo} alt='Coinmiq' />
             </div>
         );
     } else {
@@ -446,8 +450,8 @@ function Logo(props) {
 function HashRate(props) {
     const style = {
         fontSize: 36,
-        color: "#333",
-        fontWeight: "bold"
+        color: '#333',
+        fontWeight: 'bold'
     };
     return <div style={style}>{props.display} H/s</div>;
 }
@@ -455,20 +459,20 @@ function HashRate(props) {
 function StatusMessage(props) {
     const style = {
         fontSize: 14,
-        color: "#333",
-        fontWeight: "bold",
-        height: "2em",
+        color: '#333',
+        fontWeight: 'bold',
+        height: '2em',
         marginBottom: 5,
-        verticalAlign: "middle"
+        verticalAlign: 'middle'
     };
     let progressToggle = null;
     if (props.showProgress) {
         progressToggle = {
-            display: "inline"
+            display: 'inline'
         };
     } else {
         progressToggle = {
-            display: "none"
+            display: 'none'
         };
     }
     return (
@@ -477,8 +481,8 @@ function StatusMessage(props) {
                 <img
                     src={loading}
                     style={progressToggle}
-                    width="16"
-                    alt="Loading"
+                    width='16'
+                    alt='Loading'
                 />&nbsp;&nbsp;
                 {props.display}
             </p>
@@ -489,13 +493,13 @@ function StatusMessage(props) {
 function ThreadCount(props) {
     const style = {
         fontSize: 14,
-        color: "#333",
-        fontWeight: "bold",
+        color: '#333',
+        fontWeight: 'bold',
         marginBottom: 5
     };
-    let ts = "threads";
+    let ts = 'threads';
     if (props.display === 1) {
-        ts = "thread";
+        ts = 'thread';
     }
     return (
         <div>
@@ -513,7 +517,7 @@ function Footer(props) {
     };
     return (
         <div style={style}>
-            <a href="http://www.nimiq.com" target="_blank">
+            <a href='http://www.nimiq.com' target='_blank'>
                 Powered by the Nimiq blockchain
             </a>
         </div>
