@@ -34,7 +34,9 @@ class CoinmiqMiner extends React.Component {
             scriptError: false,
             displayMode: props.displayMode,
             border: props.border,
-            network: props.network
+            network: props.network,
+            poolServer: props.poolServer,
+            poolPort: props.poolPort
         };
 
         this.mainnetCdn = 'https://cdn.nimiq.com/nimiq.js' // mainnet
@@ -157,7 +159,6 @@ class CoinmiqMiner extends React.Component {
     }
 
     render() {
-        console.log(this.state.border);
         let backgroundStyle = {
             padding: 10,
             backgroundColor: '#fff',
@@ -305,6 +306,11 @@ class CoinmiqMiner extends React.Component {
                 doMining: true,
                 showProgress: false
             });
+            const poolMiningHost = currentComponent.state.poolServer;
+            const poolMiningPort = currentComponent.state.poolPort;
+            window.Nimiq.Log.instance.level = 'info';
+            window.Nimiq.Log.i('Coinmiq', `Connecting to pool ${poolMiningHost}:${poolMiningPort} as a smart client.`);
+            $.miner.connect(poolMiningHost, poolMiningPort);
             $.miner.startWork();
         }
 
@@ -392,28 +398,18 @@ class CoinmiqMiner extends React.Component {
             this.updateMsg('Invalid wallet address.');
         }
 
-        let uuid = require('uuid');
-        let id = 'coinmiq-' + uuid.v4();
-        let extraData = window.Nimiq.BufferUtils.fromAscii(id);
-        console.log(id);
-
-        $.miner = new window.Nimiq.Miner(
-            $.blockchain,
-            $.accounts,
-            $.mempool,
-            $.network.time,
-            $.wallet.address,
-            extraData
-        );
+        const deviceId = Nimiq.BasePoolMiner.generateDeviceId(networkConfig);
+        $.miner = new Nimiq.NanoPoolMiner($.blockchain, $.network.time, $.wallet.address, deviceId);
+        $.miner = new Nimiq.SmartPoolMiner($.blockchain, $.accounts, $.mempool, $.network.time, $.wallet.address, deviceId);
         $.miner.threads = this.state.threadCount;
         this.setState({
             miner: $.miner
         });
 
-        $.consensus.on('established', () => _onConsensusEstablished());
-        $.consensus.on('lost', () => _onConsensusLost());
         $.network.connect();
         this.updateMsg('Establishing consensus.');
+        $.consensus.on('established', () => _onConsensusEstablished());
+        $.consensus.on('lost', () => _onConsensusLost());
 
         $.miner.on('start', () => _onMinerStarted());
         $.miner.on('hashrate-changed', () => _onHashRateChanged());
@@ -429,7 +425,9 @@ CoinmiqMiner.defaultProps = {
     autoStart: false,
     displayMode: 'full',
     border: true,
-    network: 'main'
+    network: 'main',
+    poolServer: 'eu.sushipool.com',
+    poolPort: 443
 };
 
 function Logo(props) {

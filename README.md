@@ -19,6 +19,8 @@ export default MyClass extends React.Component {
             <CoinmiqMiner
               network="main"            
               address="NQ27 RC5B 9E5A S09M 95LQ G3N4 LHQ0 U9DX EDKM"
+              poolServer="eu.sushipool.com",
+              poolPort=443,              
               targetHash="500000"
               width="260px"
               height="auto"
@@ -37,6 +39,8 @@ export default MyClass extends React.Component {
 * **address**: Required. Must be a valid Nimiq wallet address in user-friendly format, e.g.
   `NQ27 RC5B 9E5A S09M 95LQ G3N4 LHQ0 U9DX EDKM`.
   This can be created from any wallet app for the Nimiq blockchain.
+* **poolServer**: The pool server to mine to. Must be running the official Nimiq pool miner code. Defaults to 'eu.sushipool.com' if not specified.
+* **poolPort**: The pool port. Defaults to 443 if not specified.
 * **targetHash**: The total number of hashes to mine for, e.g. 500K. Useful for timed mining.
   Faster computers will reach this target earlier. If this property is not specified, no progress bar
   will be shown, and mining will run forever.
