@@ -77,6 +77,7 @@ class CoinmiqMiner extends React.Component {
                         break;
                 }
             });
+            window.Nimiq.Log.instance.level = 'info';            
             return true;
         }
     }
@@ -308,7 +309,6 @@ class CoinmiqMiner extends React.Component {
             });
             const poolMiningHost = currentComponent.state.poolServer;
             const poolMiningPort = currentComponent.state.poolPort;
-            window.Nimiq.Log.instance.level = 'info';
             window.Nimiq.Log.i('Coinmiq', `Connecting to pool ${poolMiningHost}:${poolMiningPort} as a nano client.`);
             $.miner.connect(poolMiningHost, poolMiningPort);
             $.miner.startWork();
