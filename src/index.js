@@ -77,7 +77,6 @@ class CoinmiqMiner extends React.Component {
                         break;
                 }
             });
-            window.Nimiq.Log.instance.level = 'info';            
             return true;
         }
     }
@@ -380,6 +379,7 @@ class CoinmiqMiner extends React.Component {
             });
         }
 
+        window.Nimiq.Log.instance.level = 'info';            
         window.Nimiq.GenesisConfig.init(window.Nimiq.GenesisConfig.CONFIGS[this.state.network]);
         const networkConfig = new Nimiq.DumbNetworkConfig();
         $.consensus = await window.Nimiq.Consensus.light(networkConfig);
