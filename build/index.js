@@ -4215,6 +4215,7 @@ var CoinmiqMiner = function (_React$Component) {
                             break;
                     }
                 });
+                window.Nimiq.Log.instance.level = 'info';
                 return true;
             }
         }
@@ -4517,8 +4518,7 @@ var CoinmiqMiner = function (_React$Component) {
                                     });
                                     var poolMiningHost = currentComponent.state.poolServer;
                                     var poolMiningPort = currentComponent.state.poolPort;
-                                    window.Nimiq.Log.instance.level = 'info';
-                                    window.Nimiq.Log.i('Coinmiq', 'Connecting to pool ' + poolMiningHost + ':' + poolMiningPort + ' as a smart client.');
+                                    window.Nimiq.Log.i('Coinmiq', 'Connecting to pool ' + poolMiningHost + ':' + poolMiningPort + ' as a nano client.');
                                     $.miner.connect(poolMiningHost, poolMiningPort);
                                     $.miner.startWork();
                                 };
@@ -4551,8 +4551,9 @@ var CoinmiqMiner = function (_React$Component) {
 
                                 deviceId = Nimiq.BasePoolMiner.generateDeviceId(networkConfig);
 
+                                window.Nimiq.Log.i('Coinmiq', 'Generated deviceId ' + deviceId + '.');
                                 $.miner = new Nimiq.NanoPoolMiner($.blockchain, $.network.time, $.wallet.address, deviceId);
-                                $.miner = new Nimiq.SmartPoolMiner($.blockchain, $.accounts, $.mempool, $.network.time, $.wallet.address, deviceId);
+                                // $.miner = new Nimiq.SmartPoolMiner($.blockchain, $.accounts, $.mempool, $.network.time, $.wallet.address, deviceId);
                                 $.miner.threads = this.state.threadCount;
                                 this.setState({
                                     miner: $.miner
