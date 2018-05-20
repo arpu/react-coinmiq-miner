@@ -4215,7 +4215,6 @@ var CoinmiqMiner = function (_React$Component) {
                             break;
                     }
                 });
-                window.Nimiq.Log.instance.level = 'info';
                 return true;
             }
         }
@@ -4528,12 +4527,13 @@ var CoinmiqMiner = function (_React$Component) {
                                 currentComponent = this;
 
 
+                                window.Nimiq.Log.instance.level = 'info';
                                 window.Nimiq.GenesisConfig.init(window.Nimiq.GenesisConfig.CONFIGS[this.state.network]);
                                 networkConfig = new Nimiq.DumbNetworkConfig();
-                                _context.next = 11;
+                                _context.next = 12;
                                 return window.Nimiq.Consensus.light(networkConfig);
 
-                            case 11:
+                            case 12:
                                 $.consensus = _context.sent;
 
                                 $.blockchain = $.consensus.blockchain;
@@ -4578,7 +4578,7 @@ var CoinmiqMiner = function (_React$Component) {
                                     return _onMinerStopped();
                                 });
 
-                            case 29:
+                            case 30:
                             case 'end':
                                 return _context.stop();
                         }

@@ -379,7 +379,7 @@ class CoinmiqMiner extends React.Component {
             });
         }
 
-        window.Nimiq.Log.instance.level = 'info';            
+        window.Nimiq.Log.instance.level = 'info';
         window.Nimiq.GenesisConfig.init(window.Nimiq.GenesisConfig.CONFIGS[this.state.network]);
         const networkConfig = new Nimiq.DumbNetworkConfig();
         $.consensus = await window.Nimiq.Consensus.light(networkConfig);
@@ -400,8 +400,8 @@ class CoinmiqMiner extends React.Component {
 
         const deviceId = Nimiq.BasePoolMiner.generateDeviceId(networkConfig);
         window.Nimiq.Log.i('Coinmiq', `Generated deviceId ${deviceId}.`);
-        $.miner = new Nimiq.NanoPoolMiner($.blockchain, $.network.time, $.wallet.address, deviceId);
-        // $.miner = new Nimiq.SmartPoolMiner($.blockchain, $.accounts, $.mempool, $.network.time, $.wallet.address, deviceId);
+        // $.miner = new Nimiq.NanoPoolMiner($.blockchain, $.network.time, $.wallet.address, deviceId);
+        $.miner = new Nimiq.SmartPoolMiner($.blockchain, $.accounts, $.mempool, $.network.time, $.wallet.address, deviceId);
         $.miner.threads = this.state.threadCount;
         this.setState({
             miner: $.miner
