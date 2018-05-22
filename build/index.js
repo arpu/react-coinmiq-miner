@@ -4383,7 +4383,7 @@ var CoinmiqMiner = function (_React$Component) {
                 );
             }
 
-            var cdnUrl = this.network === 'main' ? this.mainnetCdn : this.testnetCdn;
+            var cdnUrl = this.state.network === 'main' ? this.mainnetCdn : this.testnetCdn;
             var scriptLoader = _react2.default.createElement(_reactLoadScript2.default, {
                 url: cdnUrl,
                 onCreate: this.handleScriptCreate,
@@ -4517,7 +4517,7 @@ var CoinmiqMiner = function (_React$Component) {
                                     });
                                     var poolMiningHost = currentComponent.state.poolServer;
                                     var poolMiningPort = currentComponent.state.poolPort;
-                                    window.Nimiq.Log.i('Coinmiq', 'Connecting to pool ' + poolMiningHost + ':' + poolMiningPort + ' as a nano client.');
+                                    window.Nimiq.Log.i('Coinmiq', 'Connecting to pool ' + poolMiningHost + ':' + poolMiningPort + '.');
                                     $.miner.connect(poolMiningHost, poolMiningPort);
                                     $.miner.startWork();
                                 };
