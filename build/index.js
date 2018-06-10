@@ -4531,7 +4531,7 @@ var CoinmiqMiner = function (_React$Component) {
                                 window.Nimiq.GenesisConfig.init(window.Nimiq.GenesisConfig.CONFIGS[this.state.network]);
                                 networkConfig = new Nimiq.DumbNetworkConfig();
                                 _context.next = 12;
-                                return window.Nimiq.Consensus.light(networkConfig);
+                                return window.Nimiq.Consensus.nano(networkConfig);
 
                             case 12:
                                 $.consensus = _context.sent;
@@ -4560,7 +4560,7 @@ var CoinmiqMiner = function (_React$Component) {
                                 });
 
                                 $.network.connect();
-                                this.updateMsg('Establishing consensus.');
+                                this.updateMsg('Establishing nano consensus.');
                                 $.consensus.on('established', function () {
                                     return _onConsensusEstablished();
                                 });
