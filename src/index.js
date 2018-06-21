@@ -16,7 +16,7 @@ class CoinmiqMiner extends React.Component {
 
         this.state = {
             hashRate: 0,
-            threadCount: Math.ceil(navigator.hardwareConcurrency / 2),
+            threadCount: 1,
             doMining: false,
             showProgress: false,
             statusMsg: 'Ready.',
